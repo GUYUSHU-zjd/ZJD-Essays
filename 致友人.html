@@ -116,9 +116,10 @@
             background: white;
             border-radius: 6px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 0.5rem 0;
-            min-width: 160px;
+            padding: 0.3rem 0;
+            min-width: 140px;
             z-index: 10;
+            font-size: 0.75rem;
         }
 
         .music-selector:hover .music-dropdown {
@@ -126,10 +127,12 @@
         }
 
         .music-option {
-            padding: 0.5rem 1rem;
+            padding: 0.4rem 0.8rem;
             cursor: pointer;
-            font-size: 0.8rem;
             transition: background 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .music-option:hover {
@@ -235,6 +238,7 @@
             .mobile-player {
                 display: block;
                 margin-left: 1rem;
+                position: relative;
             }
             
             .mobile-player .player-toggle {
@@ -248,19 +252,22 @@
                 color: white;
                 cursor: pointer;
                 box-shadow: 0 2px 8px rgba(106, 137, 204, 0.3);
+                z-index: 5;
+                position: relative;
             }
             
             .mobile-player.expanded {
                 position: absolute;
                 top: 100%;
-                left: 0;
-                width: 100%;
+                right: 0;
+                width: 180px;
                 background: rgba(255, 255, 255, 0.98);
-                border-radius: 0 0 12px 12px;
+                border-radius: 12px;
                 padding: 1rem;
                 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
                 z-index: 10;
                 margin-left: 0;
+                margin-top: 0.5rem;
             }
             
             .mobile-player.expanded .player-toggle {
@@ -287,6 +294,16 @@
             .mobile-player .song-info {
                 margin-top: 0.5rem;
             }
+            
+            /* 移动端下拉菜单样式 */
+            .mobile-player .music-dropdown {
+                min-width: 120px;
+                font-size: 0.7rem;
+            }
+            
+            .mobile-player .music-option {
+                padding: 0.3rem 0.6rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -306,11 +323,29 @@
                 width: 36px;
                 height: 36px;
             }
+            
+            .mobile-player.expanded {
+                width: 160px;
+                padding: 0.8rem;
+            }
         }
 
         /* 改善触摸体验 */
         button, .progress-container {
             -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* 关闭按钮 */
+        .close-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 0.9rem;
+            z-index: 15;
         }
     </style>
 </head>
@@ -362,6 +397,10 @@
                     </div>
                     
                     <div class="player-content">
+                        <button class="close-btn" id="mobileCloseBtn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        
                         <div class="player-header">
                             <div class="player-title">背景音乐</div>
                             <div class="music-selector">
@@ -446,6 +485,7 @@
         const mobileCurrentTimeEl = document.getElementById('mobileCurrentTime');
         const mobileDurationEl = document.getElementById('mobileDuration');
         const mobileSongInfo = document.getElementById('mobileSongInfo');
+        const mobileCloseBtn = document.getElementById('mobileCloseBtn');
         
         const musicOptions = document.querySelectorAll('.music-option');
         const playerToggle = document.querySelector('.player-toggle');
@@ -495,8 +535,15 @@
         });
 
         // 移动端播放器展开/收起
-        playerToggle.addEventListener('click', () => {
-            mobilePlayer.classList.toggle('expanded');
+        playerToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mobilePlayer.classList.add('expanded');
+        });
+
+        // 移动端关闭按钮
+        mobileCloseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mobilePlayer.classList.remove('expanded');
         });
 
         // 更新进度条
@@ -572,6 +619,11 @@
                 mobilePlayer.classList.contains('expanded')) {
                 mobilePlayer.classList.remove('expanded');
             }
+        });
+
+        // 防止点击播放器内部时触发外部点击事件
+        mobilePlayer.addEventListener('click', (e) => {
+            e.stopPropagation();
         });
     </script>
 </body>
