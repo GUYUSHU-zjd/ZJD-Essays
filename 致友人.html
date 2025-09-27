@@ -27,7 +27,6 @@
             max-width: 800px;
             margin: 0 auto;
             position: relative;
-            padding-top: 80px;
         }
 
         .letter {
@@ -36,11 +35,6 @@
             padding: 2.5rem;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             backdrop-filter: blur(10px);
-            transition: transform 0.3s ease;
-        }
-
-        .letter:hover {
-            transform: translateY(-5px);
         }
 
         .header {
@@ -76,20 +70,51 @@
             margin-bottom: 1.2rem;
         }
 
-        /* 简约音乐播放器 */
+        /* 简约浮动音乐播放器 */
         .music-player {
             position: fixed;
             top: 1.5rem;
             right: 1.5rem;
-            width: 180px;
+            width: 50px;
+            height: 50px;
             background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            padding: 1rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
             z-index: 100;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.4);
             transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .music-player.expanded {
+            width: 180px;
+            height: auto;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .player-toggle {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #6a89cc;
+            font-size: 1.2rem;
+        }
+
+        .player-content {
+            display: none;
+        }
+
+        .music-player.expanded .player-content {
+            display: block;
+        }
+
+        .music-player.expanded .player-toggle {
+            display: none;
         }
 
         .player-header {
@@ -146,8 +171,8 @@
         }
 
         .play-btn {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: #6a89cc;
             border: none;
@@ -204,19 +229,6 @@
                 padding: 0.5rem;
             }
             
-            .container {
-                padding-top: 0;
-            }
-            
-            .music-player {
-                position: relative;
-                top: auto;
-                right: auto;
-                width: 100%;
-                max-width: 300px;
-                margin: 0 auto 2rem;
-            }
-            
             .letter {
                 padding: 1.8rem;
             }
@@ -227,6 +239,22 @@
             
             .content {
                 font-size: 1rem;
+            }
+            
+            .music-player {
+                top: 1rem;
+                right: 1rem;
+                width: 44px;
+                height: 44px;
+            }
+            
+            .music-player.expanded {
+                width: 160px;
+            }
+            
+            .play-btn {
+                width: 32px;
+                height: 32px;
             }
         }
 
@@ -242,6 +270,18 @@
             .content {
                 font-size: 0.95rem;
             }
+            
+            .music-player {
+                top: 0.8rem;
+                right: 0.8rem;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .music-player.expanded {
+                width: 150px;
+                padding: 0.8rem;
+            }
         }
 
         /* 改善触摸体验 */
@@ -252,34 +292,40 @@
 </head>
 <body>
     <div class="music-player">
-        <div class="player-header">
-            <div class="player-title">背景音乐</div>
-            <div class="music-selector">
-                <i class="fas fa-list" style="color: #6a89cc; cursor: pointer;"></i>
-                <div class="music-dropdown">
-                    <div class="music-option" data-src="https://guyushu-zjd.github.io/my-music/%E5%88%97%E8%92%82%E9%BD%90%E4%BA%9A%20-%20Maybe%EF%BC%88%E9%99%8D%E8%B0%83%EF%BC%89.mp3" data-title="Maybe ">Maybe </div>
-                    <div class="music-option" data-src="https://guyushu-zjd.github.io/my-music/evening%20-%20Corn%20Wave.mp3" data-title="evening">evening</div>
-                    <div class="music-option" data-src="https://guyushu-zjd.github.io/my-music/What%20Do%20You%20Mean%20-%20Justin%20Bieber.mp3" data-title="What Do You Mean">What Do You Mean</div>
+        <div class="player-toggle">
+            <i class="fas fa-music"></i>
+        </div>
+        
+        <div class="player-content">
+            <div class="player-header">
+                <div class="player-title">音乐</div>
+                <div class="music-selector">
+                    <i class="fas fa-list" style="color: #6a89cc; cursor: pointer;"></i>
+                    <div class="music-dropdown">
+                        <div class="music-option" data-src="https://guyushu-zjd.github.io/my-music/%E5%88%97%E8%92%82%E9%BD%90%E4%BA%9A%20-%20Maybe%EF%BC%88%E9%99%8D%E8%B0%83%EF%BC%89.mp3" data-title="Maybe">Maybe</div>
+                        <div class="music-option" data-src="https://guyushu-zjd.github.io/my-music/evening%20-%20Corn%20Wave.mp3" data-title="Corn Wave">Corn Wave</div>
+                        <div class="music-option" data-src="https://guyushu-zjd.github.io/my-music/What%20Do%20You%20Mean%20-%20Justin%20Bieber.mp3" data-title="What Do You Mean">What Do You Mean</div>
+                    </div>
                 </div>
             </div>
+            
+            <div class="controls">
+                <button class="play-btn" id="playBtn">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            
+            <div class="time">
+                <span id="currentTime">0:00</span>
+                <span id="duration">0:00</span>
+            </div>
+            
+            <div class="song-info" id="songInfo">Maybe</div>
         </div>
-        
-        <div class="controls">
-            <button class="play-btn" id="playBtn">
-                <i class="fas fa-play"></i>
-            </button>
-        </div>
-        
-        <div class="progress-container" id="progressContainer">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-        
-        <div class="time">
-            <span id="currentTime">0:00</span>
-            <span id="duration">0:00</span>
-        </div>
-        
-        <div class="song-info" id="songInfo">Maybe</div>
         
         <audio id="audioPlayer" loop>
             <source src="https://guyushu-zjd.github.io/my-music/%E5%88%97%E8%92%82%E9%BD%90%E4%BA%9A%20-%20Maybe%EF%BC%88%E9%99%8D%E8%B0%83%EF%BC%89.mp3" type="audio/mpeg">
@@ -331,6 +377,8 @@
         const durationEl = document.getElementById('duration');
         const songInfo = document.getElementById('songInfo');
         const musicOptions = document.querySelectorAll('.music-option');
+        const musicPlayer = document.querySelector('.music-player');
+        const playerToggle = document.querySelector('.player-toggle');
 
         // 播放/暂停功能
         playBtn.addEventListener('click', () => {
@@ -361,6 +409,11 @@
                 audioPlayer.play();
                 playBtn.innerHTML = '<i class="fas fa-pause"></i>';
             });
+        });
+
+        // 展开/收起播放器
+        playerToggle.addEventListener('click', () => {
+            musicPlayer.classList.toggle('expanded');
         });
 
         // 更新进度条
