@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>致友人郭世杰</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Noto Serif SC", serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
+            color: #333;
+            line-height: 1.8;
+            padding: 1rem;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .letter {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            padding-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #444;
+            letter-spacing: 1px;
+        }
+
+        .date {
+            color: #777;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        .content {
+            font-size: 1.05rem;
+            text-indent: 2em;
+            margin-bottom: 1.5rem;
+            color: #555;
+            text-align: justify;
+        }
+
+        .content p {
+            margin-bottom: 1.2rem;
+        }
+
+        /* 简约浮动音乐播放器 */
+        .music-player {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .music-player.expanded {
+            width: 180px;
+            height: auto;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .player-toggle {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #6a89cc;
+            font-size: 1.2rem;
+        }
+
+        .player-content {
+            display: none;
+        }
+
+        .music-player.expanded .player-content {
+            display: block;
+        }
+
+        .music-player.expanded .player-toggle {
+            display: none;
+        }
+
+        .player-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+        }
+
+        .player-title {
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .music-selector {
+            position: relative;
+            display: inline-block;
+        }
+
+        .music-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 0;
+            min-width: 160px;
+            z-index: 10;
+        }
+
+        .music-selector:hover .music-dropdown {
+            display: block;
+        }
+
+        .music-option {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.2s;
+        }
+
+        .music-option:hover {
+            background: rgba(106, 137, 204, 0.1);
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .play-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #6a89cc;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .play-btn:hover {
+            background: #5a79bc;
+            transform: scale(1.05);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 2px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #6a89cc;
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        .time {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .song-info {
+            font-size: 0.8rem;
+            color: #888;
+            text-align: center;
+            margin-top: 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            body {
+                padding: 0.5rem;
+            }
+            
+            .letter {
+                padding: 1.8rem;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .content {
+                font-size: 1rem;
+            }
+            
+            .music-player {
+                top: 1rem;
+                right: 1rem;
+                width: 44px;
+                height: 44px;
+            }
+            
+            .music-player.expanded {
+                width: 160px;
+            }
+            
+            .play-btn {
+                width: 32px;
+                height: 32px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .letter {
+                padding: 1.2rem;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+            }
+            
+            .content {
+                font-size: 0.95rem;
+            }
+            
+            .music-player {
+                top: 0.8rem;
+                right: 0.8rem;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .music-player.expanded {
+                width: 150px;
+                padding: 0.8rem;
+            }
+        }
+
+        /* 改善触摸体验 */
+        button, .progress-container {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div class="music-player">
+        <div class="player-toggle">
+            <i class="fas fa-music"></i>
+        </div>
+        
+        <div class="player-content">
+            <div class="player-header">
+                <div class="player-title">音乐</div>
+                <div class="music-selector">
+                    <i class="fas fa-list" style="color: #6a89cc; cursor: pointer;"></i>
+                    <div class="music-dropdown">
+                        <div class="music-option" data-src="https://guyushu-zjd.github.io/my-music/%E5%88%97%E8%92%82%E9%BD%90%E4%BA%9A%20-%20Maybe%EF%BC%88%E9%99%8D%E8%B0%83%EF%BC%89.mp3" data-title="Maybe">Maybe</div>
+                        <div class="music-option" data-src="https://guyushu-zjd.github.io/my-music/evening%20-%20Corn%20Wave.mp3" data-title="Corn Wave">Corn Wave</div>
+                        <div class="music-option" data-src="https://guyushu-zjd.github.io/my-music/What%20Do%20You%20Mean%20-%20Justin%20Bieber.mp3" data-title="What Do You Mean">What Do You Mean</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="play-btn" id="playBtn">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            
+            <div class="time">
+                <span id="currentTime">0:00</span>
+                <span id="duration">0:00</span>
+            </div>
+            
+            <div class="song-info" id="songInfo">Maybe</div>
+        </div>
+        
+        <audio id="audioPlayer" loop>
+            <source src="https://guyushu-zjd.github.io/my-music/%E5%88%97%E8%92%82%E9%BD%90%E4%BA%9A%20-%20Maybe%EF%BC%88%E9%99%8D%E8%B0%83%EF%BC%89.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <div class="container">
+        <div class="letter">
+            <div class="header">
+                <h1>致友人郭世杰</h1>
+                <div class="date">写给挚友的寄语</div>
+            </div>
+            
+            <div class="content">
+                <p>相识虽短，却已触到某种命运的质地。我常想，人与人的交汇，不止于言语的往来，更似暗室内的两盏灯，照亮对方不曾明说的角落。</p>
+                
+                <p>因我对音乐的发展所知有限，便另辟蹊径，想与你分享几种更为沉静、却也更为根本的能力，它们不随时代变迁而褪色，反而在时间深处，愈显其光泽。它们不喧哗，却拥有支撑一个人走很远的路的韧性。</p>
+                
+                <p>这些能力往往隐而不显，却深深渗透于工作与生活的每一个角落。</p>
+                
+                <p>若要我推荐，我或许会首推心理学。它不仅是一门学科，更是一种洞察人性的智慧。对于一个如你这般敏锐且自信的人，掌握心理学原理，将不止于"投人所好"或"避免被厌"，更能预见其下一步的可能轨迹。</p>
+                
+                <p>真正的洞察，是能称量沉默的重量，从突兀的转身中看见委屈，从滔滔不绝里听出忐忑。至此，如何行动便豁然开朗。</p>
+                
+                <p>当愤怒、逃避、热爱都不再是突如其来的谜，而是有源之水，你便获得了一种从容，一种在人际暗礁间航行的预见力。</p>
+                
+                <p>待阅历沉淀，能将世间百态还原为寥寥原理，他人的选择不再令你困惑，命运的转折不再让你惊慌。你站在岸上，已能看清潮水的来去。这即是心理学赋予人的真正力量，从洞察到预见，直至了然。</p>
+                
+                <p>其次是管理能力。管理的精髓，不在制度与层级，而在对性格的深刻体察。它并非生硬归类，而是理解每个灵魂的内在驱动。最高级的管理，永远是激发与成全，而非束缚与指令。</p>
+                
+                <p>这两种能力，看似分立，实则交错共生。其中的精微之处，难以尽述。但我私心下以为，你若能早些接触这些智慧，它们或许能在你未来迷茫的抉择中，如照进室内那微弱的光，提供些许指引。</p>
+                
+                <p>最后，一切需回归于内。我想触及一个更深层的话题，关于灵魂的站立，关于思考的习性。这已超越技能的范畴，它决定你生命的厚度与高度。无论未来如何变迁，无论梦想是否抵达，这种能力将使你在任何境遇中都能看清自己，安顿此心。</p>
+                
+                <p>即使所有的努力终似流水东逝，那努力的姿态本身，就已是一种尊严。如同西西弗推石上山。</p>
+                
+                <p>石头滚落，是他的宿命；但推石之举，却是他对命运的回应。这回应里，有他全部的自由与高贵。至于结果已不重要，重要的是，在每一次推动的间歇，他所望见的那片天空，是否比上一次更加辽阔。</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 音乐播放器功能
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playBtn = document.getElementById('playBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressContainer = document.getElementById('progressContainer');
+        const currentTimeEl = document.getElementById('currentTime');
+        const durationEl = document.getElementById('duration');
+        const songInfo = document.getElementById('songInfo');
+        const musicOptions = document.querySelectorAll('.music-option');
+        const musicPlayer = document.querySelector('.music-player');
+        const playerToggle = document.querySelector('.player-toggle');
+
+        // 播放/暂停功能
+        playBtn.addEventListener('click', () => {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                audioPlayer.pause();
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        });
+
+        // 切换音乐功能
+        musicOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const src = option.getAttribute('data-src');
+                const title = option.getAttribute('data-title');
+                
+                // 暂停当前音乐
+                audioPlayer.pause();
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                
+                // 更新音乐源
+                audioPlayer.src = src;
+                songInfo.textContent = title;
+                
+                // 播放新音乐
+                audioPlayer.play();
+                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            });
+        });
+
+        // 展开/收起播放器
+        playerToggle.addEventListener('click', () => {
+            musicPlayer.classList.toggle('expanded');
+        });
+
+        // 更新进度条
+        audioPlayer.addEventListener('timeupdate', () => {
+            const currentTime = audioPlayer.currentTime;
+            const duration = audioPlayer.duration;
+            const progressPercent = (currentTime / duration) * 100;
+            progressBar.style.width = `${progressPercent}%`;
+            
+            // 更新时间显示
+            currentTimeEl.textContent = formatTime(currentTime);
+            if (duration) {
+                durationEl.textContent = formatTime(duration);
+            }
+        });
+
+        // 点击进度条跳转
+        progressContainer.addEventListener('click', (e) => {
+            const width = progressContainer.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audioPlayer.duration;
+            audioPlayer.currentTime = (clickX / width) * duration;
+        });
+
+        // 格式化时间显示 (分:秒)
+        function formatTime(seconds) {
+            let min = Math.floor(seconds / 60);
+            let sec = Math.floor(seconds % 60);
+            sec = sec < 10 ? `0${sec}` : sec;
+            return `${min}:${sec}`;
+        }
+
+        // 音频加载完成后更新总时长
+        audioPlayer.addEventListener('loadedmetadata', () => {
+            durationEl.textContent = formatTime(audioPlayer.duration);
+        });
+
+        // 移动端触摸事件支持
+        progressContainer.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            const rect = progressContainer.getBoundingClientRect();
+            const touchX = touch.clientX - rect.left;
+            const width = progressContainer.clientWidth;
+            const duration = audioPlayer.duration;
+            audioPlayer.currentTime = (touchX / width) * duration;
+        });
+
+        // 添加键盘快捷键支持
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                playBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
